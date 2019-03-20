@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row no-gutter">
+    <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+    <div class="col-md-8 col-lg-6">
+      <div class="auth d-flex align-items-center py-5">
+        <div class="container">
+
+          <div *ngIf="(isLoading$ | async)" class="row justify-content-center">
+            <div class="spinner-grow text-primary" style="width: 6rem; height: 6rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div *ngIf="!(isLoading$ | async)" class="col-md-9 col-lg-8 mx-auto">
+
+              <h2 class="auth-heading mb-5 text-center">Welcome back!</h2>
+
+              <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+                <div class="form-label-group">
+                  <input id="inputEmail" formControlName="login" [ngClass]="{'border-danger': isFieldValid('login')}"
+                    class="form-control" placeholder="Email address">
+                  <label for="inputEmail">Email address</label>
+
+                  <div class="mt-2 ml-4" *ngIf="isFieldValid('login')">
+                    <div class="text-danger" *ngIf="form['login'].errors.required">
+                      Field is required.
+                    </div>
+                    <div class="text-danger" *ngIf="form['login'].errors.email">
+                      Please enter a valid email address.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-label-group">
+                  <input type="password" id="inputPassword" [ngClass]="{'border-danger': isFieldValid('password')}"
+                    formControlName="password" class="form-control" placeholder="Password">
+                  <label for="inputPassword">Password</label>
+
+                  <div class="mt-2 ml-4" *ngIf="isFieldValid('password')">
+                    <div class="text-danger" *ngIf="form['password'].errors.required">
+                      Field is required.
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-block btn-auth text-uppercase font-weight-bold mb-2" type="submit">
+                  Sign in
+                </button>
+
+                <hr>
+
+                <div class="text-center">
+                  <a class="small" [routerLink]="['/auth/forgotpassword']" routerLinkActive="active">Forgot password?</a>
+                </div>
+
+                <div class="text-center">
+                  <a class="small" [routerLink]="['/auth/signup']" routerLinkActive="active">Create an Account!</a>
+                </div>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
