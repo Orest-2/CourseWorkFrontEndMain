@@ -2,7 +2,7 @@ import { User } from '../../models';
 
 export interface State {
   user: User | null;
-  isTokenValid: boolean;
+  isTokenValid: boolean | null;
   isLoading: boolean;
   error: string;
 }
@@ -10,6 +10,6 @@ export interface State {
 export const initialState: State = {
   user: null,
   isLoading: false,
-  isTokenValid: false,
+  isTokenValid: null,
   error: null
 };

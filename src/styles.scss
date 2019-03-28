@@ -80,3 +80,15 @@ $input-padding-y: 0.75rem;
     color: transparent;
   }
 }
+
+.ui-float-label> {
+  input:focus~label,
+  textarea:focus~label,
+  input.ui-state-filled~label,
+  textarea.ui-state-filled~label,
+  .ui-inputwrapper-focus~label,
+  .ui-inputwrapper-filled~label {
+    top: -.75em;
+    font-size: 12px;
+  }
+}

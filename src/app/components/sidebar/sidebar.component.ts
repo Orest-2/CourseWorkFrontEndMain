@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-
   sidebarItems = [
     {
       title: 'Dashboard',
@@ -18,7 +17,8 @@ export class SidebarComponent implements OnInit {
       id: 'collapseProd',
       title: 'Products',
       faIcon: 'fas fa-fw fa-box',
-      collapse: true,
+      collapse: false,
+      link: '/products',
       collapseItems: [
         {
           title: 'New',
@@ -32,9 +32,7 @@ export class SidebarComponent implements OnInit {
     }
   ];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { Observable, of as observableOf, defer } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { Observable, of as observableOf } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import * as authActions from './actions';
 import { AngularTokenService } from 'angular-token';
 import { Router } from '@angular/router';
+
 
 @Injectable()
 export class AuthStoreEffects {
 
   constructor(
     private dataService: AngularTokenService,
-    private actions$: Actions,
-    private router: Router
+    private router: Router,
+    private actions$: Actions
   ) { }
 
   @Effect()
@@ -36,22 +37,47 @@ export class AuthStoreEffects {
       )
     );
 
+  @Effect({ dispatch: false })
+  signinRequestSuccessEffect$ = this.actions$
+    .pipe(
+      ofType<authActions.SigninSuccessAction>(
+        authActions.ActionTypes.SIGNIN_SUCCESS
+      ),
+      tap(() => {
+        this.router.navigateByUrl('dashboard');
+      })
+    );
+
   @Effect()
-  init$ = defer(() => {
-    if (this.dataService.currentAuthData) {
-      this.dataService
-        .validateToken()
-        .pipe(
-          map(
-            user => new authActions.ValidateTokenSuccessAction({ user: user.body })
-          ),
-          catchError(
-            error => observableOf(new authActions.ValidateTokenFailureAction({ error: error.error }))
+  vlidateTokenRequestEffect$: Observable<Action> = this.actions$
+    .pipe(
+      ofType<authActions.ValidateTokenRequestAction>(
+        authActions.ActionTypes.VALIDATE_TOKEN_REQUEST
+      ),
+      switchMap(() =>
+        this.dataService
+          .validateToken()
+          .pipe(
+            map(
+              user => new authActions.ValidateTokenSuccessAction({ user })
+            ),
+            catchError(
+              error => observableOf(new authActions.ValidateTokenFailureAction({ error: error.error }))
+            )
           )
-        );
-    } else {
-      this.router.navigateByUrl('auth/signin');
-    }
-  });
+      )
+    );
+
+  @Effect({ dispatch: false })
+  vlidateTokenRequesFailuretEffect$ = this.actions$
+    .pipe(
+      ofType<authActions.ValidateTokenFailureAction>(
+        authActions.ActionTypes.VALIDATE_TOKEN_FAILURE
+      ),
+      tap(() => {
+        localStorage.clear();
+        this.router.navigateByUrl('auth/signin');
+      })
+    );
 
 }

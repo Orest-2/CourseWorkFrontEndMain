@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
-import { Observable } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,14 +7,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  user: Observable<any>;
-
-  constructor(
-    private store$: Store<RootStoreState.State>
-  ) { }
+  constructor(private title: Title) {}
 
   ngOnInit() {
-    this.user = this.store$.select(AuthStoreSelectors.selectSigninUser);
+    this.title.setTitle('Dashboard');
   }
-
 }

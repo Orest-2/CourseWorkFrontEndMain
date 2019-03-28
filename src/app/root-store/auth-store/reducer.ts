@@ -28,7 +28,7 @@ export function authReducer(state = initialState, action: Actions): State {
       return {
         ...state,
         error: null,
-        isTokenValid: false,
+        isTokenValid: null,
         isLoading: true
       };
     case ActionTypes.VALIDATE_TOKEN_SUCCESS:
