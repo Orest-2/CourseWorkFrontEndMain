@@ -1,4 +1,4 @@
-import { User } from '../../models';
+import { User } from "../../models";
 
 export interface State {
   user: User | null;

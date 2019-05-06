@@ -1,19 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Component, OnInit } from "@angular/core";
+import { Title } from "@angular/platform-browser";
 import {
   FormGroup,
   FormBuilder,
   FormControl,
   Validators,
   FormArray
-} from '@angular/forms';
-import { CopyrightApplication, Product } from 'src/app/models';
-import { SelectItem } from 'primeng/api';
+} from "@angular/forms";
+import { CopyrightApplication, Product } from "src/app/models";
+import { SelectItem } from "primeng/api";
 
 @Component({
-  selector: 'app-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  selector: "app-applications",
+  templateUrl: "./applications.component.html",
+  styleUrls: ["./applications.component.scss"]
 })
 export class ApplicationsComponent implements OnInit {
   applicationForm: FormGroup;
@@ -27,27 +27,29 @@ export class ApplicationsComponent implements OnInit {
   constructor(private title: Title, private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.title.setTitle('Applications');
+    this.title.setTitle("Applications");
 
-    this.products = [{ id: 1, name: 'test', description: 'qqq', product_type: 1 }];
+    this.products = [
+      { id: 1, name: "test", description: "qqq", product_type: 1 }
+    ];
     this.applications = [
       {
         id: 1,
-        title: 'app 1',
-        description: 'qqq',
+        title: "app 1",
+        description: "qqq",
         product_id: 1,
-        tasks: [{ title: 'qqq' }, { title: 'qqq2' }]
+        tasks: [{ title: "qqq" }, { title: "qqq2" }]
       }
     ];
 
-    this.productOptions = this.getOptions(this.products, 'id', 'name');
+    this.productOptions = this.getOptions(this.products, "id", "name");
 
     this.columns = [
-      { field: 'title', header: 'Title' },
-      { field: 'description', header: 'Description' },
+      { field: "title", header: "Title" },
+      { field: "description", header: "Description" },
       {
-        field: 'product_id',
-        header: 'Product',
+        field: "product_id",
+        header: "Product",
         render: (rowData: { product_id: number }) => {
           return this.products.find(el => el.id === rowData.product_id).name;
         }
@@ -55,22 +57,22 @@ export class ApplicationsComponent implements OnInit {
     ];
 
     this.applicationForm = this.fb.group({
-      id: [''],
-      product_id: ['', Validators.required],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
+      id: [""],
+      product_id: ["", Validators.required],
+      title: ["", Validators.required],
+      description: ["", Validators.required],
       tasks: this.fb.array([])
     });
   }
 
   initTasks() {
     return this.fb.group({
-      id: [''],
-      title: ['', Validators.required]
+      id: [""],
+      title: ["", Validators.required]
     });
   }
 
-  addTask(data: any) {
+  addTask() {
     const control = this.applicationForm.controls.tasks as FormArray;
     control.push(this.initTasks());
   }
@@ -89,14 +91,17 @@ export class ApplicationsComponent implements OnInit {
 
   showDialog(type: string, data: CopyrightApplication = null) {
     switch (type) {
-      case 'add':
+      case "add":
         this.newApplication = true;
-        this.applicationForm.setControl('tasks', new FormArray([]));
+        this.applicationForm.setControl("tasks", new FormArray([]));
         this.applicationForm.reset();
         break;
-      case 'edit':
+      case "edit":
         this.newApplication = false;
-        this.applicationForm.setControl('tasks', new FormArray(data.tasks.map(() => this.initTasks())));
+        this.applicationForm.setControl(
+          "tasks",
+          new FormArray(data.tasks.map(() => this.initTasks()))
+        );
 
         this.applicationForm.patchValue(data);
         break;
@@ -106,6 +111,7 @@ export class ApplicationsComponent implements OnInit {
   }
 
   create() {
+    console.log(this.applicationForm.value);
     this.display = false;
   }
 

@@ -1,14 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Product } from 'src/app/models';
-import { ProductService } from 'src/app/services';
-import { Title } from '@angular/platform-browser';
-import { ConfirmationService, SelectItem } from 'primeng/api';
-import { FormBuilder, FormControl, Validators, FormGroup } from '@angular/forms';
+import { Component, OnInit } from "@angular/core";
+import { Product } from "src/app/models";
+import { ProductService } from "src/app/services";
+import { Title } from "@angular/platform-browser";
+import { ConfirmationService, SelectItem } from "primeng/api";
+import {
+  FormBuilder,
+  FormControl,
+  Validators,
+  FormGroup
+} from "@angular/forms";
+import { error } from '@angular/compiler/src/util';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.scss']
+  selector: "app-products",
+  templateUrl: "./products.component.html",
+  styleUrls: ["./products.component.scss"]
 })
 export class ProductsComponent implements OnInit {
   productForm: FormGroup;
@@ -26,47 +32,51 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.title.setTitle('Products');
+    this.title.setTitle("Products");
 
     this.productService
       .getAll()
-      .subscribe(data => (this.products = data.products), error => console.log(error));
+      .subscribe(
+        data => (this.products = data.products),
+        error => console.log(error)
+      );
 
     this.productTypes = [
-      { value: 1, label: 'Text' },
-      { value: 2, label: 'Video' },
-      { value: 3, label: 'Songs' },
-      { value: 4, label: 'Image' },
-      { value: 5, label: 'Other' }
+      { value: 1, label: "Text" },
+      { value: 2, label: "Video" },
+      { value: 3, label: "Songs" },
+      { value: 4, label: "Image" },
+      { value: 5, label: "Other" }
     ];
 
     this.columns = [
-      { field: 'name', header: 'Title' },
-      { field: 'description', header: 'Description' },
+      { field: "name", header: "Title" },
+      { field: "description", header: "Description" },
       {
-        field: 'product_type',
-        header: 'Type',
+        field: "product_type",
+        header: "Type",
         render: (rowData: { product_type: number }) => {
-          return this.productTypes.find(e => e.value === rowData.product_type).label;
+          return this.productTypes.find(e => e.value === rowData.product_type)
+            .label;
         }
       }
     ];
 
     this.productForm = this.fb.group({
-      id: new FormControl(''),
-      name: new FormControl('', Validators.required),
-      description: new FormControl('', Validators.required),
-      product_type: new FormControl('', Validators.required)
+      id: [""],
+      name: ["", Validators.required],
+      description: ["", Validators.required],
+      product_type: ["", Validators.required]
     });
   }
 
   showDialog(type: string, data: Product = null) {
     switch (type) {
-      case 'add':
+      case "add":
         this.newProduct = true;
         this.productForm.reset();
         break;
-      case 'edit':
+      case "edit":
         this.newProduct = false;
         this.productForm.patchValue(data);
         break;
@@ -78,7 +88,10 @@ export class ProductsComponent implements OnInit {
   create() {
     this.productService
       .create(this.productForm.value)
-      .subscribe(data => this.products.push(data.product), error => console.log(error));
+      .subscribe(
+        data => this.products.push(data.product),
+        error => console.log(error)
+      );
 
     this.display = false;
   }
@@ -99,15 +112,15 @@ export class ProductsComponent implements OnInit {
 
   delete(id: number) {
     this.confirmationService.confirm({
-      message: 'Do you want to delete this Product?',
-      header: 'Delete Confirmation',
-      icon: 'pi pi-info-circle',
+      message: "Do you want to delete this Product?",
+      header: "Delete Confirmation",
+      icon: "pi pi-info-circle",
       accept: () => {
         this.productService
           .delete(id)
           .subscribe(
             () => (this.products = this.products.filter(val => val.id !== id)),
-            erorr => console.log(erorr)
+            error => console.log(error)
           );
       }
     });

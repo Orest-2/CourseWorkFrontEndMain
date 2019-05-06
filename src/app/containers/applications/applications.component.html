@@ -117,12 +117,12 @@
                   <div class="ui-g-12 mt-2">
                     <span class="ui-float-label">
                       <input
-                        id="float-input"
+                        id="float-title"
                         type="text"
                         formControlName="title"
                         pInputText
                       />
-                      <label for="float-input"
+                      <label for="float-title"
                         >Title <span class="text-danger">*</span></label
                       >
                     </span>
@@ -130,19 +130,17 @@
                   <div class="ui-g-12 mt-2">
                     <span class="ui-float-label">
                       <textarea
-                        id="float-input"
+                        id="float-description"
                         formControlName="description"
-                        rows="5"
-                        cols="10"
+                        rows="2"
                         pInputTextarea
-                        autoResize="autoResize"
                       ></textarea>
-                      <label for="float-input"
+                      <label for="float-description"
                         >Description <span class="text-danger">*</span></label
                       >
                     </span>
                   </div>
-                  <div class="ui-g-12 mt-2">
+                  <div class="ui-g-12">
                     <p-dropdown
                       appendTo="body"
                       [options]="productOptions"
@@ -150,31 +148,46 @@
                       placeholder="Select Product *"
                     ></p-dropdown>
                   </div>
-                  <div class="ui-g-12 mt-2">
+                  <div class="ui-g-12">
                     <div formArrayName="tasks">
-                      <div *ngFor="let address of applicationForm.controls.tasks.controls; let i=index">
-                          <!-- address header, show remove button when more than one address available -->
-                          <div>
-                              <span>Address {{i + 1}}</span>
-                              <span *ngIf="applicationForm.controls.tasks.controls.length > 1"
-                                  (click)="removeAddress(i)">
+                      <h5 class="first">
+                        Tasks
+                      </h5>
+                      <a href="javascript:void(0);" (click)="addTask()">Add</a>
+                      <div
+                        *ngFor="
+                          let task of applicationForm.controls.tasks.controls;
+                          let i = index
+                        "
+                      >
+                        <div [formGroupName]="i">
+                          <div class="mt-4">
+                            <div class="ui-inputgroup">
+                              <span class="ui-g-12 p-0 ui-float-label">
+                                <input
+                                  id="float-task"
+                                  type="text"
+                                  formControlName="title"
+                                  pInputText
+                                />
+                                <label for="float-task"
+                                  >Task {{ i + 1 }}
+                                  <span class="text-danger">*</span>
+                                </label>
                               </span>
-                          </div>
-
-                          <!-- Angular assigns array index as group name by default 0, 1, 2, ... -->
-                          <div [formGroupName]="i">
-                              <!--street-->
-                              <div>
-                                  <label>title</label>
-                                  <input type="text" formControlName="title">
-                                  <!--display error message if street is not valid-->
-                                  <small [hidden]="applicationForm.controls.tasks.controls[i].controls.title.valid">
-                                      Title is required
-                                  </small>
-                              </div>
+                              <button
+                                type="button"
+                                pButton
+                                icon="fa fa-times"
+                                class="ui-button-danger mr-2"
+                                (click)="removeTask(i)"
+                                class="ui-button-danger"
+                              ></button>
                             </div>
+                          </div>
+                        </div>
                       </div>
-                  </div>
+                    </div>
                   </div>
                 </div>
               </form>
