@@ -154,35 +154,37 @@
                         Tasks
                       </h5>
                       <a href="javascript:void(0);" (click)="addTask()">Add</a>
-                      <div
-                        *ngFor="
-                          let task of applicationForm.controls.tasks.controls;
-                          let i = index
-                        "
-                      >
-                        <div [formGroupName]="i">
-                          <div class="mt-4">
-                            <div class="ui-inputgroup">
-                              <span class="ui-g-12 p-0 ui-float-label">
-                                <input
-                                  id="float-task"
-                                  type="text"
-                                  formControlName="title"
-                                  pInputText
-                                />
-                                <label for="float-task"
-                                  >Task {{ i + 1 }}
-                                  <span class="text-danger">*</span>
-                                </label>
-                              </span>
-                              <button
-                                type="button"
-                                pButton
-                                icon="fa fa-times"
-                                class="ui-button-danger mr-2"
-                                (click)="removeTask(i)"
-                                class="ui-button-danger"
-                              ></button>
+                      <div class="pre-scrollable py-2" style="max-height: 200px">
+                        <div
+                          *ngFor="
+                            let task of applicationForm.controls.tasks.controls;
+                            let i = index
+                          "
+                        >
+                          <div [formGroupName]="i">
+                            <div class="mt-4">
+                              <div class="ui-inputgroup">
+                                <span class="ui-g-12 p-0 ui-float-label">
+                                  <input
+                                    id="float-task"
+                                    type="text"
+                                    formControlName="title"
+                                    pInputText
+                                  />
+                                  <label for="float-task"
+                                    >Task {{ i + 1 }}
+                                    <span class="text-danger">*</span>
+                                  </label>
+                                </span>
+                                <button
+                                  type="button"
+                                  pButton
+                                  icon="fa fa-times"
+                                  class="ui-button-danger mr-2"
+                                  (click)="removeTask(i)"
+                                  class="ui-button-danger"
+                                ></button>
+                              </div>
                             </div>
                           </div>
                         </div>

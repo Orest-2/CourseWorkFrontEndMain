@@ -26,11 +26,11 @@ $input-padding-y: 0.75rem;
   position: relative;
   margin-bottom: 1rem;
 
-  >input {
+  > input {
     @extend %extend_1;
   }
 
-  >label {
+  > label {
     @extend %extend_1;
     position: absolute;
     top: 0;
@@ -42,8 +42,8 @@ $input-padding-y: 0.75rem;
     color: $color_abbey_approx;
     cursor: text;
     border: 1px solid transparent;
-    border-radius: .25rem;
-    transition: all .1s ease-in-out;
+    border-radius: 0.25rem;
+    transition: all 0.1s ease-in-out;
   }
 
   input::-webkit-input-placeholder {
@@ -59,7 +59,7 @@ $input-padding-y: 0.75rem;
       padding-top: $input-padding-y + $input-padding-y * (2 / 3);
       padding-bottom: $input-padding-y / 3;
 
-      ~label {
+      ~ label {
         padding-top: $input-padding-y / 3;
         padding-bottom: $input-padding-y / 3;
         font-size: 12px;
@@ -81,14 +81,23 @@ $input-padding-y: 0.75rem;
   }
 }
 
-.ui-float-label> {
-  input:focus~label,
-  textarea:focus~label,
-  input.ui-state-filled~label,
-  textarea.ui-state-filled~label,
-  .ui-inputwrapper-focus~label,
-  .ui-inputwrapper-filled~label {
-    top: -.75em;
+.ui-float-label > {
+  input:focus ~ label,
+  textarea:focus ~ label,
+  input.ui-state-filled ~ label,
+  textarea.ui-state-filled ~ label,
+  .ui-inputwrapper-focus ~ label,
+  .ui-inputwrapper-filled ~ label {
+    top: -0.75em;
     font-size: 12px;
   }
+}
+
+*::-webkit-scrollbar {
+  width: 0.3em;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #4e73df;
+  outline: 1px solid white;
 }
