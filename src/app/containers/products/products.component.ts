@@ -46,7 +46,7 @@ export class ProductsComponent implements OnInit {
       {
         field: 'product_type',
         header: 'Type',
-        render: (rowData: { product_type: any }) => {
+        render: (rowData: { product_type: number }) => {
           return this.productTypes.find(e => e.value === rowData.product_type).label;
         }
       }

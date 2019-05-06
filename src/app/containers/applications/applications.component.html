@@ -1,0 +1,225 @@
+<div id="wrapper">
+  <app-sidebar class="bg-gradient-primary"></app-sidebar>
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+      <app-topbar></app-topbar>
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">Copyright applications</h1>
+
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <div class="text-left">
+              <button
+                type="button"
+                pButton
+                icon="fa fa-plus"
+                (click)="showDialog('add')"
+                label="Add"
+              ></button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p-table
+              #dt
+              [columns]="columns"
+              [value]="applications"
+              [paginator]="true"
+              [rows]="10"
+              [responsive]="true"
+            >
+              <ng-template pTemplate="caption">
+                <div class="text-right">
+                  <i class="fa fa-search ml-2 mr-2"></i>
+                  <input
+                    type="text"
+                    pInputText
+                    placeholder="Global Filter"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  />
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{ col.header }}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                  <td *ngFor="let col of columns">
+                    <span class="ui-column-title">{{ col.header }}</span>
+                    <span *ngIf="!col.render">{{ rowData[col.field] }}</span>
+                    <span *ngIf="col.render">{{ col.render(rowData) }}</span>
+                  </td>
+                  <td class="text-center">
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-pencil"
+                      class="ui-button-warning mr-2"
+                      (click)="showDialog('edit', rowData)"
+                    ></button>
+                    <button
+                      type="button"
+                      pButton
+                      icon="fa fa-times"
+                      class="ui-button-danger mr-2"
+                      (click)="delete(rowData.id)"
+                      class="ui-button-danger"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <!-- * dialogs -->
+            <p-confirmDialog #cd>
+              <p-footer>
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-times"
+                  label="Cancel"
+                  class="ui-button-secondary"
+                  (click)="cd.reject()"
+                ></button>
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-check"
+                  label="Delete"
+                  class="ui-button-danger"
+                  (click)="cd.accept()"
+                ></button>
+              </p-footer>
+            </p-confirmDialog>
+
+            <p-dialog
+              [header]="newApplication ? 'New Application' : 'Edit Application'"
+              [(visible)]="display"
+              [responsive]="true"
+              showEffect="fade"
+              [modal]="true"
+              [style]="{ width: '500px' }"
+            >
+              <form [formGroup]="applicationForm">
+                <div class="ui-g ui-fluid">
+                  <div class="ui-g-12 mt-2">
+                    <span class="ui-float-label">
+                      <input
+                        id="float-input"
+                        type="text"
+                        formControlName="title"
+                        pInputText
+                      />
+                      <label for="float-input"
+                        >Title <span class="text-danger">*</span></label
+                      >
+                    </span>
+                  </div>
+                  <div class="ui-g-12 mt-2">
+                    <span class="ui-float-label">
+                      <textarea
+                        id="float-input"
+                        formControlName="description"
+                        rows="5"
+                        cols="10"
+                        pInputTextarea
+                        autoResize="autoResize"
+                      ></textarea>
+                      <label for="float-input"
+                        >Description <span class="text-danger">*</span></label
+                      >
+                    </span>
+                  </div>
+                  <div class="ui-g-12 mt-2">
+                    <p-dropdown
+                      appendTo="body"
+                      [options]="productOptions"
+                      formControlName="product_id"
+                      placeholder="Select Product *"
+                    ></p-dropdown>
+                  </div>
+                  <div class="ui-g-12 mt-2">
+                    <div formArrayName="tasks">
+                      <div *ngFor="let address of applicationForm.controls.tasks.controls; let i=index">
+                          <!-- address header, show remove button when more than one address available -->
+                          <div>
+                              <span>Address {{i + 1}}</span>
+                              <span *ngIf="applicationForm.controls.tasks.controls.length > 1"
+                                  (click)="removeAddress(i)">
+                              </span>
+                          </div>
+
+                          <!-- Angular assigns array index as group name by default 0, 1, 2, ... -->
+                          <div [formGroupName]="i">
+                              <!--street-->
+                              <div>
+                                  <label>title</label>
+                                  <input type="text" formControlName="title">
+                                  <!--display error message if street is not valid-->
+                                  <small [hidden]="applicationForm.controls.tasks.controls[i].controls.title.valid">
+                                      Title is required
+                                  </small>
+                              </div>
+                            </div>
+                      </div>
+                  </div>
+                  </div>
+                </div>
+              </form>
+
+              <p-footer>
+                <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button
+                    type="button"
+                    pButton
+                    icon="pi pi-times"
+                    (click)="display = false"
+                    label="Cancel"
+                    class="ui-button-secondary"
+                  ></button>
+                  <button
+                    *ngIf="newApplication"
+                    type="button"
+                    pButton
+                    icon="fa fa-check"
+                    (click)="create()"
+                    [disabled]="!applicationForm.valid"
+                    label="Save"
+                  ></button>
+                  <button
+                    *ngIf="!newApplication"
+                    type="button"
+                    pButton
+                    icon="pi pi-pencil"
+                    (click)="update()"
+                    [disabled]="!applicationForm.valid"
+                    label="Edit"
+                    class="ui-button-warning"
+                  ></button>
+                </div>
+              </p-footer>
+            </p-dialog>
+            <!-- * /.dialogs -->
+          </div>
+        </div>
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- End of Main Content -->
+
+    <app-footer></app-footer>
+  </div>
+  <!-- End of Content Wrapper -->
+</div>

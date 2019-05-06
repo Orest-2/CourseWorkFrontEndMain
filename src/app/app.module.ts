@@ -19,6 +19,7 @@ import { TopbarComponent } from './components/topbar/topbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { DashboardComponent } from './containers/dashboard/dashboard.component';
 import { ProductsComponent } from './containers/products/products.component';
+import { ApplicationsComponent } from './containers/applications/applications.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ProductsComponent } from './containers/products/products.component';
     TopbarComponent,
     FooterComponent,
     DashboardComponent,
-    ProductsComponent
+    ProductsComponent,
+    ApplicationsComponent
   ],
   imports: [
     BrowserModule,

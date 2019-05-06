@@ -2,10 +2,10 @@
 
   <!-- Sidebar - Brand -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" [routerLink]="['/dashboard']">
-    <div class="sidebar-brand-icon rotate-n-15">
-      <i class="fas fa-laugh-wink"></i>
+    <div *ngIf="showIcon" class="sidebar-brand-icon">
+      OCP
     </div>
-    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
+    <div *ngIf="!showIcon" class="sidebar-brand-text mx-3">Open Copyright Platform</div>
   </a>
 
   <!-- Nav Item -->
@@ -16,7 +16,7 @@
 
   <!-- Sidebar Toggler (Sidebar) -->
   <div class="text-center d-none d-md-inline">
-    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    <button class="rounded-circle border-0" id="sidebarToggle" (click)="toggle()"></button>
   </div>
 
 </ul>

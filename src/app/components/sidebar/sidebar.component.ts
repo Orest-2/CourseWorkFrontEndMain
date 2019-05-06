@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
+  showIcon = false;
   sidebarItems = [
     {
       title: 'Dashboard',
@@ -29,10 +30,20 @@ export class SidebarComponent implements OnInit {
           link: '/products/list'
         }
       ]
-    }
+    },
+    {
+      title: 'Applications',
+      faIcon: 'far fa-list-alt',
+      link: '/applications',
+      collapse: false
+    },
   ];
 
   constructor() {}
 
   ngOnInit() {}
+
+  toggle() {
+    this.showIcon = !this.showIcon;
+  }
 }
