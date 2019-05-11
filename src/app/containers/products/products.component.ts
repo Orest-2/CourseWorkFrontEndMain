@@ -3,13 +3,14 @@ import { Product } from "src/app/models";
 import { ProductService } from "src/app/services";
 import { Title } from "@angular/platform-browser";
 import { ConfirmationService, SelectItem } from "primeng/api";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { Store } from "@ngrx/store";
 import {
-  FormBuilder,
-  FormControl,
-  Validators,
-  FormGroup
-} from "@angular/forms";
-import { error } from '@angular/compiler/src/util';
+  RootStoreState,
+  ProductStoreSelectors,
+  ProductStoreActions
+} from "src/app/root-store";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-products",
@@ -20,11 +21,14 @@ export class ProductsComponent implements OnInit {
   productForm: FormGroup;
   display: boolean;
   newProduct: boolean;
-  products: Product[];
   productTypes: SelectItem[];
   columns: any[];
+  products$: Observable<Product[]>;
+  error$: Observable<string>;
+  isLoading$: Observable<boolean>;
 
   constructor(
+    private store$: Store<RootStoreState.State>,
     private fb: FormBuilder,
     private productService: ProductService,
     private title: Title,
@@ -34,12 +38,17 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Products");
 
-    this.productService
-      .getAll()
-      .subscribe(
-        data => (this.products = data.products),
-        error => console.log(error)
-      );
+    this.products$ = this.store$.select(
+      ProductStoreSelectors.selectAllProductItems
+    );
+
+    this.error$ = this.store$.select(ProductStoreSelectors.selectProductError);
+
+    this.isLoading$ = this.store$.select(
+      ProductStoreSelectors.selectProductIsLoading
+    );
+
+    this.store$.dispatch(new ProductStoreActions.LoadRequestAction());
 
     this.productTypes = [
       { value: 1, label: "Text" },
@@ -89,7 +98,10 @@ export class ProductsComponent implements OnInit {
     this.productService
       .create(this.productForm.value)
       .subscribe(
-        data => this.products.push(data.product),
+        data =>
+          this.store$.dispatch(
+            new ProductStoreActions.CreateRequestAction(data.product)
+          ),
         error => console.log(error)
       );
 
@@ -98,12 +110,14 @@ export class ProductsComponent implements OnInit {
 
   update() {
     const id = this.productForm.value.id;
-    const index = this.products.findIndex(el => el.id === id);
 
     this.productService
       .update(id, this.productForm.value)
       .subscribe(
-        data => (this.products[index] = data.product),
+        data =>
+          this.store$.dispatch(
+            new ProductStoreActions.UpdateRequestAction(id, data.product)
+          ),
         error => console.log(error)
       );
 
@@ -119,7 +133,10 @@ export class ProductsComponent implements OnInit {
         this.productService
           .delete(id)
           .subscribe(
-            () => (this.products = this.products.filter(val => val.id !== id)),
+            () =>
+              this.store$.dispatch(
+                new ProductStoreActions.DeleteRequestAction(id)
+              ),
             error => console.log(error)
           );
       }

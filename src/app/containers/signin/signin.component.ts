@@ -3,22 +3,22 @@ import {
   OnInit,
   AfterViewInit,
   ChangeDetectorRef
-} from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+} from "@angular/core";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { Store } from "@ngrx/store";
 import {
   RootStoreState,
   AuthStoreSelectors,
   AuthStoreActions
-} from 'src/app/root-store';
-import { Observable } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { Title } from '@angular/platform-browser';
+} from "src/app/root-store";
+import { Observable } from "rxjs";
+import { MessageService } from "primeng/api";
+import { Title } from "@angular/platform-browser";
 
 @Component({
-  selector: 'app-signin',
-  templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.scss']
+  selector: "app-signin",
+  templateUrl: "./signin.component.html",
+  styleUrls: ["./signin.component.scss"]
 })
 export class SigninComponent implements OnInit, AfterViewInit {
   signinForm: FormGroup;
@@ -39,11 +39,11 @@ export class SigninComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.title.setTitle('Sign In');
+    this.title.setTitle("Sign In");
 
     this.signinForm = this.fb.group({
-      login: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      login: ["", [Validators.required, Validators.email]],
+      password: ["", [Validators.required]]
     });
 
     this.isLoading$ = this.store$.select(
@@ -57,8 +57,8 @@ export class SigninComponent implements OnInit, AfterViewInit {
       .subscribe(error => {
         if (error) {
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error Message',
+            severity: "error",
+            summary: "Error Message",
             detail: error.errors[0],
             life: 5000
           });
