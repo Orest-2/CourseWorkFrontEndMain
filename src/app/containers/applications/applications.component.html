@@ -3,8 +3,25 @@
 
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Loader -->
+    <div *ngIf="isLoadingApplication$ | async" class="container h-100">
+      <div class="row align-items-center h-100">
+        <div class="col-6 mx-auto">
+          <div class="row justify-content-center">
+            <div
+              class="spinner-grow text-primary"
+              style="width: 6rem; height: 6rem;"
+              role="status"
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Main Content -->
-    <div id="content">
+    <div *ngIf="!(isLoadingApplication$ | async)" id="content">
       <app-topbar></app-topbar>
 
       <!-- Begin Page Content -->
@@ -29,7 +46,7 @@
             <p-table
               #dt
               [columns]="columns"
-              [value]="applications"
+              [value]="applications$ | async"
               [paginator]="true"
               [rows]="10"
               [responsive]="true"
@@ -59,9 +76,18 @@
                   <td *ngFor="let col of columns">
                     <span class="ui-column-title">{{ col.header }}</span>
                     <span *ngIf="!col.render">{{ rowData[col.field] }}</span>
-                    <span *ngIf="col.render">{{ col.render(rowData) }}</span>
+                    <span *ngIf="col.render">{{
+                      col.render(rowData) | async
+                    }}</span>
                   </td>
-                  <td class="text-center">
+                  <td *ngIf="rowData.status === 0" class="text-center">
+                    <button
+                      pButton
+                      type="button"
+                      label="Submit"
+                      class="ui-button-success mr-2"
+                      (click)="submit(rowData.id)"
+                    ></button>
                     <button
                       pButton
                       type="button"
@@ -78,6 +104,15 @@
                       class="ui-button-danger"
                     ></button>
                   </td>
+                  <td *ngIf="rowData.status !== 0" class="text-center">
+                    <button
+                      pButton
+                      type="button"
+                      label="Cancel Submit"
+                      class="ui-button-danger mr-2"
+                      (click)="unSubmit(rowData.id)"
+                    ></button>
+                  </td>
                 </tr>
               </ng-template>
             </p-table>
@@ -89,7 +124,7 @@
                   type="button"
                   pButton
                   icon="pi pi-times"
-                  label="Cancel"
+                  label="No"
                   class="ui-button-secondary"
                   (click)="cd.reject()"
                 ></button>
@@ -97,7 +132,7 @@
                   type="button"
                   pButton
                   icon="pi pi-check"
-                  label="Delete"
+                  label="Yes"
                   class="ui-button-danger"
                   (click)="cd.accept()"
                 ></button>
@@ -143,7 +178,7 @@
                   <div class="ui-g-12">
                     <p-dropdown
                       appendTo="body"
-                      [options]="productOptions"
+                      [options]="productOptions$ | async"
                       formControlName="product_id"
                       placeholder="Select Product *"
                     ></p-dropdown>
@@ -154,7 +189,10 @@
                         Tasks
                       </h5>
                       <a href="javascript:void(0);" (click)="addTask()">Add</a>
-                      <div class="pre-scrollable py-2" style="max-height: 200px">
+                      <div
+                        class="pre-scrollable py-2"
+                        style="max-height: 200px"
+                      >
                         <div
                           *ngFor="
                             let task of applicationForm.controls.tasks.controls;

@@ -1,13 +1,13 @@
 import { Action } from "@ngrx/store";
-import { Product } from "src/app/models";
+import { Application } from "src/app/models";
 
 export enum ActionType {
-  LOAD_REQUEST = "[PRODUCT] Load Request",
-  LOAD_FAILURE = "[PRODUCT] Load Failure",
-  LOAD_SUCCESS = "[PRODUCT] Load Success",
-  CREATE_REQUEST = "[PRODUCT] Create Request",
-  UPDATE_REQUEST = "[PRODUCT] Update Request",
-  DELETE_REQUEST = "[PRODUCT] Delete Request"
+  LOAD_REQUEST = "[APPLICATION] Load Request",
+  LOAD_FAILURE = "[APPLICATION] Load Failure",
+  LOAD_SUCCESS = "[APPLICATION] Load Success",
+  CREATE_REQUEST = "[APPLICATION] Create Request",
+  UPDATE_REQUEST = "[APPLICATION] Update Request",
+  DELETE_REQUEST = "[APPLICATION] Delete Request",
 }
 
 export class LoadRequestAction implements Action {
@@ -21,17 +21,17 @@ export class LoadFailureAction implements Action {
 
 export class LoadSuccessAction implements Action {
   readonly type = ActionType.LOAD_SUCCESS;
-  constructor(public payload: { products: Product[] }) {}
+  constructor(public payload: { applications: Application[] }) {}
 }
 
 export class CreateRequestAction implements Action {
   readonly type = ActionType.CREATE_REQUEST;
-  constructor(public product: Product) {}
+  constructor(public application: Application) {}
 }
 
 export class UpdateRequestAction implements Action {
   readonly type = ActionType.UPDATE_REQUEST;
-  constructor(public id: string, public changes: Partial<Product>) {}
+  constructor(public id: number, public changes: Partial<Application>) {}
 }
 
 export class DeleteRequestAction implements Action {
@@ -44,5 +44,5 @@ export type Action =
   | LoadFailureAction
   | LoadSuccessAction
   | CreateRequestAction
-  | UpdateRequestAction
-  | DeleteRequestAction;
+  | DeleteRequestAction
+  | UpdateRequestAction;

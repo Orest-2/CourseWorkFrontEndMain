@@ -1,14 +1,19 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
+import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
+import { Application, Product } from "src/app/models";
+import { SelectItem, ConfirmationService } from "primeng/api";
+import { Observable } from "rxjs";
+import { Store } from "@ngrx/store";
 import {
-  FormGroup,
-  FormBuilder,
-  FormControl,
-  Validators,
-  FormArray
-} from "@angular/forms";
-import { CopyrightApplication, Product } from "src/app/models";
-import { SelectItem } from "primeng/api";
+  RootStoreState,
+  ProductStoreSelectors,
+  ProductStoreActions,
+  ApplicationStoreSelectors,
+  ApplicationStoreActions
+} from "src/app/root-store";
+import { map } from "rxjs/operators";
+import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
   selector: "app-applications",
@@ -19,30 +24,50 @@ export class ApplicationsComponent implements OnInit {
   applicationForm: FormGroup;
   display: boolean;
   newApplication: boolean;
-  products: Product[];
-  productOptions: SelectItem[];
-  applications: CopyrightApplication[];
   columns: any[];
+  productOptions$: Observable<SelectItem[]>;
+  applications$: Observable<Application[]>;
+  products$: Observable<Product[]>;
+  errorProduct$: Observable<string>;
+  errorApplication$: Observable<string>;
+  isLoadingProduct$: Observable<boolean>;
+  isLoadingApplication$: Observable<boolean>;
 
-  constructor(private title: Title, private fb: FormBuilder) {}
+  constructor(
+    private title: Title,
+    private applicationService: ApplicationService,
+    private fb: FormBuilder,
+    private confirmationService: ConfirmationService,
+    private store$: Store<RootStoreState.State>
+  ) {}
 
   ngOnInit() {
     this.title.setTitle("Applications");
 
-    this.products = [
-      { id: 1, name: "test", description: "qqq", product_type: 1 }
-    ];
-    this.applications = [
-      {
-        id: 1,
-        title: "app 1",
-        description: "qqq",
-        product_id: 1,
-        tasks: [{ title: "qqq" }, { title: "qqq2" }]
-      }
-    ];
+    this.products$ = this.store$.select(
+      ProductStoreSelectors.selectAllProductItems
+    );
+    this.applications$ = this.store$.select(
+      ApplicationStoreSelectors.selectAllApplicationItems
+    );
 
-    this.productOptions = this.getOptions(this.products, "id", "name");
+    this.errorProduct$ = this.store$.select(
+      ProductStoreSelectors.selectProductError
+    );
+    this.isLoadingProduct$ = this.store$.select(
+      ProductStoreSelectors.selectProductIsLoading
+    );
+    this.errorApplication$ = this.store$.select(
+      ApplicationStoreSelectors.selectApplicationError
+    );
+    this.isLoadingApplication$ = this.store$.select(
+      ApplicationStoreSelectors.selectApplicationIsLoading
+    );
+
+    this.store$.dispatch(new ProductStoreActions.LoadRequestAction());
+    this.store$.dispatch(new ApplicationStoreActions.LoadRequestAction());
+
+    this.productOptions$ = this.getOptions(this.products$, "id", "name");
 
     this.columns = [
       { field: "title", header: "Title" },
@@ -51,7 +76,12 @@ export class ApplicationsComponent implements OnInit {
         field: "product_id",
         header: "Product",
         render: (rowData: { product_id: number }) => {
-          return this.products.find(el => el.id === rowData.product_id).name;
+          return this.products$.pipe(
+            map(data => {
+              let p = data.find(el => el.id === rowData.product_id);
+              return p ? p.name : "";
+            })
+          );
         }
       }
     ];
@@ -82,14 +112,22 @@ export class ApplicationsComponent implements OnInit {
     control.removeAt(i);
   }
 
-  getOptions(array: any[], value: string, label: string) {
-    return array.map<SelectItem>(el => ({
-      value: el[value],
-      label: el[label]
-    }));
+  getOptions(
+    array: Observable<any[]>,
+    value: string,
+    label: string
+  ): Observable<SelectItem[]> {
+    return array.pipe(
+      map(data =>
+        data.map(el => ({
+          value: el[value],
+          label: el[label]
+        }))
+      )
+    );
   }
 
-  showDialog(type: string, data: CopyrightApplication = null) {
+  showDialog(type: string, data: Application = null) {
     switch (type) {
       case "add":
         this.newApplication = true;
@@ -97,6 +135,7 @@ export class ApplicationsComponent implements OnInit {
         this.applicationForm.reset();
         break;
       case "edit":
+        this.applicationForm.reset();
         this.newApplication = false;
         this.applicationForm.setControl(
           "tasks",
@@ -111,15 +150,93 @@ export class ApplicationsComponent implements OnInit {
   }
 
   create() {
-    console.log(this.applicationForm.value);
+    this.applicationService
+      .create(this.applicationForm.value)
+      .subscribe(
+        data =>
+          this.store$.dispatch(
+            new ApplicationStoreActions.CreateRequestAction(
+              data.copyright_application
+            )
+          ),
+        error => console.log(error)
+      );
+
     this.display = false;
   }
 
   update() {
-    console.log(this.applicationForm.value);
+    const id = this.applicationForm.value.id;
+
+    this.applicationService
+      .update(id, this.applicationForm.value)
+      .subscribe(
+        data =>
+          this.store$.dispatch(
+            new ApplicationStoreActions.UpdateRequestAction(
+              id,
+              data.copyright_application
+            )
+          ),
+        error => console.log(error)
+      );
 
     this.display = false;
   }
 
-  delete(id: number) {}
+  delete(id: number) {
+    this.confirmationService.confirm({
+      message: "Do you want to delete this Application?",
+      header: "Delete Confirmation",
+      icon: "pi pi-info-circle",
+      accept: () => {
+        this.applicationService
+          .delete(id)
+          .subscribe(
+            () =>
+              this.store$.dispatch(
+                new ApplicationStoreActions.DeleteRequestAction(id)
+              ),
+            error => console.log(error)
+          );
+      }
+    });
+  }
+
+  submit(id: number) {
+    this.applicationService
+      .submit(id)
+      .subscribe(
+        data =>
+          this.store$.dispatch(
+            new ApplicationStoreActions.UpdateRequestAction(
+              id,
+              data.copyright_application
+            )
+          ),
+        error => console.log(error)
+      );
+  }
+
+  unSubmit(id: number) {
+    this.confirmationService.confirm({
+      message: "Do you want to cancel submit?",
+      header: "Cancel Submit",
+      icon: "pi pi-info-circle",
+      accept: () => {
+        this.applicationService
+          .unSubmit(id)
+          .subscribe(
+            data =>
+              this.store$.dispatch(
+                new ApplicationStoreActions.UpdateRequestAction(
+                  id,
+                  data.copyright_application
+                )
+              ),
+            error => console.log(error)
+          );
+      }
+    });
+  }
 }

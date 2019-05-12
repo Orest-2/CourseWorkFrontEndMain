@@ -8,7 +8,7 @@ import { appConfig } from '../app.config';
   providedIn: 'root'
 })
 export class ProductService {
-  productUrl = `${appConfig.API_BASE}/api/v1/products`;
+  productUrl = `${appConfig.API_BASE_URL}/products`;
 
   constructor(private http: HttpClient) {}
 

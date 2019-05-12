@@ -3,7 +3,7 @@
 
   <!-- Content Wrapper -->
   <div id="content-wrapper" class="d-flex flex-column">
-
+    <!-- Loader -->
     <div *ngIf="isLoading$ | async" class="container h-100">
       <div class="row align-items-center h-100">
         <div class="col-6 mx-auto">
@@ -106,7 +106,7 @@
                   type="button"
                   pButton
                   icon="pi pi-times"
-                  label="Cancel"
+                  label="No"
                   class="ui-button-secondary"
                   (click)="cd.reject()"
                 ></button>
@@ -114,7 +114,7 @@
                   type="button"
                   pButton
                   icon="pi pi-check"
-                  label="Delete"
+                  label="Yes"
                   class="ui-button-danger"
                   (click)="cd.accept()"
                 ></button>

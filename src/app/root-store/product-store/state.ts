@@ -15,4 +15,4 @@ export interface State extends EntityState<Product> {
 export const initialState: State = productAdapter.getInitialState({
   isLoading: false,
   error: null
-})
+});

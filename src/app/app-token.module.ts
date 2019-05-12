@@ -3,7 +3,7 @@ import { AngularTokenModule, AngularTokenOptions } from 'angular-token';
 import { appConfig } from './app.config';
 
 const options: AngularTokenOptions = {
-  apiBase: appConfig.API_BASE,
+  apiBase: appConfig.BASE_URL,
   signInRedirect: 'auth/signin'
 };
 
