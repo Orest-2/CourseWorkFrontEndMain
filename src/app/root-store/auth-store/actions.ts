@@ -5,6 +5,9 @@ export enum ActionTypes {
   SIGNIN_REQUEST = "[AUTH] Signin Request",
   SIGNIN_FAILURE = "[AUTH] Signin Failure",
   SIGNIN_SUCCESS = "[AUTH] Signin Success",
+  SIGNUP_REQUEST = "[AUTH] Signup Request",
+  SIGNUP_FAILURE = "[AUTH] Signup Failure",
+  SIGNUP_SUCCESS = "[AUTH] Signup Success",
   VALIDATE_TOKEN_REQUEST = "[AUTH] Validate Token Request",
   VALIDATE_TOKEN_FAILURE = "[AUTH] Validate Token Failure",
   VALIDATE_TOKEN_SUCCESS = "[AUTH] Validate Token Success"
@@ -15,13 +18,34 @@ export class SigninRequestAction implements Action {
   constructor(public payload: { login: string; password: string }) {}
 }
 
+export class SignupRequestAction implements Action {
+  readonly type = ActionTypes.SIGNUP_REQUEST;
+  constructor(
+    public payload: {
+      login: string;
+      password: string;
+      confirmationPassword: string;
+    }
+  ) {}
+}
+
 export class SigninFailureAction implements Action {
   readonly type = ActionTypes.SIGNIN_FAILURE;
   constructor(public payload: { error: string }) {}
 }
 
+export class SignupFailureAction implements Action {
+  readonly type = ActionTypes.SIGNUP_FAILURE;
+  constructor(public payload: { error: string }) {}
+}
+
 export class SigninSuccessAction implements Action {
   readonly type = ActionTypes.SIGNIN_SUCCESS;
+  constructor(public payload: { user: User }) {}
+}
+
+export class SignupSuccessAction implements Action {
+  readonly type = ActionTypes.SIGNUP_SUCCESS;
   constructor(public payload: { user: User }) {}
 }
 
@@ -44,6 +68,9 @@ export type Actions =
   | SigninRequestAction
   | SigninFailureAction
   | SigninSuccessAction
+  | SignupRequestAction
+  | SignupFailureAction
+  | SignupSuccessAction
   | ValidateTokenRequestAction
   | ValidateTokenSuccessAction
   | ValidateTokenFailureAction;

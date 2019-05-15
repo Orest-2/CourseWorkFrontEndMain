@@ -27,10 +27,33 @@ export class AuthStoreEffects {
           password: action.payload.password
         })
         .pipe(
-          map(user => new authActions.SigninSuccessAction({ user: user.body })),
+          map(user => new authActions.SigninSuccessAction({ user: user.body.data })),
           catchError(error =>
             observableOf(
               new authActions.SigninFailureAction({ error: error.error })
+            )
+          )
+        )
+    )
+  );
+
+  @Effect()
+  signupRequestEffect$: Observable<Action> = this.actions$.pipe(
+    ofType<authActions.SignupRequestAction>(
+      authActions.ActionTypes.SIGNUP_REQUEST
+    ),
+    switchMap(action =>
+      this.dataService
+        .registerAccount({
+          login: action.payload.login,
+          password: action.payload.password,
+          passwordConfirmation: action.payload.confirmationPassword
+        })
+        .pipe(
+          map(user => new authActions.SignupSuccessAction({ user: user.body.data })),
+          catchError(error =>
+            observableOf(
+              new authActions.SignupFailureAction({ error: error.error })
             )
           )
         )
@@ -47,6 +70,16 @@ export class AuthStoreEffects {
     })
   );
 
+  @Effect({ dispatch: false })
+  signupRequestSuccessEffect$ = this.actions$.pipe(
+    ofType<authActions.SignupSuccessAction>(
+      authActions.ActionTypes.SIGNUP_SUCCESS
+    ),
+    tap(() => {
+      this.router.navigateByUrl("dashboard");
+    })
+  );
+
   @Effect()
   validateTokenRequestEffect$: Observable<Action> = this.actions$.pipe(
     ofType<authActions.ValidateTokenRequestAction>(
@@ -54,7 +87,7 @@ export class AuthStoreEffects {
     ),
     switchMap(() =>
       this.dataService.validateToken().pipe(
-        map(user => new authActions.ValidateTokenSuccessAction({ user })),
+        map(user => new authActions.ValidateTokenSuccessAction({ user: user.data })),
         catchError(error =>
           observableOf(
             new authActions.ValidateTokenFailureAction({ error: error.error })

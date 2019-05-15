@@ -5,9 +5,11 @@ import { DashboardComponent } from "./containers/dashboard/dashboard.component";
 import { AuthGuard } from "./app-auth.guard";
 import { ProductsComponent } from "./containers/products/products.component";
 import { ApplicationsComponent } from "./containers/applications/applications.component";
+import { SignupComponent } from './containers/signup/signup.component';
 
 const routes: Routes = [
-  { path: "auth/signin", component: SigninComponent, canActivate: [] },
+  { path: "auth/signin", component: SigninComponent },
+  { path: "auth/signup", component: SignupComponent },
   {
     path: "dashboard",
     component: DashboardComponent,

@@ -17,13 +17,10 @@
           </div>
 
           <div class="row">
-            <div
-              *ngIf="!(isLoading$ | async)"
-              class="col-md-9 col-lg-8 mx-auto"
-            >
-              <h2 class="auth-heading mb-5 text-center">Welcome back!</h2>
+            <div *ngIf="!(isLoading$ | async)" class="col-md-9 col-lg-8 mx-auto">
+              <h2 class="auth-heading mb-5 text-center">Create an Account!</h2>
 
-              <form [formGroup]="signinForm" (ngSubmit)="onSubmit()">
+              <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
                 <div class="form-label-group">
                   <input
                     id="inputEmail"
@@ -35,10 +32,7 @@
                   <label for="inputEmail">Email address</label>
 
                   <div class="mt-2 ml-4" *ngIf="isFieldValid('login')">
-                    <div
-                      class="text-danger"
-                      *ngIf="form['login'].errors.required"
-                    >
+                    <div class="text-danger" *ngIf="form['login'].errors.required">
                       Field is required.
                     </div>
                     <div class="text-danger" *ngIf="form['login'].errors.email">
@@ -65,6 +59,56 @@
                     >
                       Field is required.
                     </div>
+                    <div
+                      class="text-danger"
+                      *ngIf="form['password'].errors.minlength"
+                    >
+                      Min length
+                      {{ form['password'].errors.minlength.requiredLength }}
+                      characters
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-label-group">
+                  <input
+                    type="password"
+                    id="repeatPassword"
+                    [ngClass]="{
+                      'border-danger': isFieldValid('passwordConfirmation')
+                    }"
+                    formControlName="passwordConfirmation"
+                    class="form-control"
+                    placeholder="Repeat Password"
+                  />
+                  <label for="repeatPassword">Repeat Password</label>
+
+                  <div
+                    class="mt-2 ml-4"
+                    *ngIf="isFieldValid('passwordConfirmation')"
+                  >
+                    <div
+                      class="text-danger"
+                      *ngIf="form['passwordConfirmation'].errors.required"
+                    >
+                      Field is required.
+                    </div>
+                    <div
+                      class="text-danger"
+                      *ngIf="form['passwordConfirmation'].errors.minlength"
+                    >
+                      Min length
+                      {{
+                        form['passwordConfirmation'].errors.minlength.requiredLength
+                      }}
+                      characters
+                    </div>
+                    <div
+                      class="text-danger"
+                      *ngIf="form['passwordConfirmation'].errors.mustMatch"
+                    >
+                      Passwords must match
+                    </div>
                   </div>
                 </div>
 
@@ -72,7 +116,7 @@
                   class="btn btn-lg btn-primary btn-block btn-auth text-uppercase font-weight-bold mb-2"
                   type="submit"
                 >
-                  Sign in
+                  Sign up
                 </button>
 
                 <hr />
@@ -80,7 +124,7 @@
                 <div class="text-center">
                   <a
                     class="small"
-                    [routerLink]="['/auth/forgotpassword']"
+                    [routerLink]="['/auth/reset_password']"
                     routerLinkActive="active"
                     >Forgot password?</a
                   >
@@ -89,9 +133,9 @@
                 <div class="text-center">
                   <a
                     class="small"
-                    [routerLink]="['/auth/signup']"
+                    [routerLink]="['/auth/sign_in']"
                     routerLinkActive="active"
-                    >Create an Account!</a
+                    >Already have an account? Login!</a
                   >
                 </div>
               </form>

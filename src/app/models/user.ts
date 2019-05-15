@@ -2,8 +2,10 @@ export interface User {
   id: number;
   provider: string;
   uid: string;
-  name: string;
-  nickname: string;
-  image: any;
-  login: string;
+  allow_password_change: boolean;
+  email: string;
+  belong_to: number;
+  is_admin: boolean;
+  is_executor: boolean;
+  is_secretary: boolean;
 }

@@ -20,6 +20,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { DashboardComponent } from './containers/dashboard/dashboard.component';
 import { ProductsComponent } from './containers/products/products.component';
 import { ApplicationsComponent } from './containers/applications/applications.component';
+import { SignupComponent } from './containers/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ApplicationsComponent } from './containers/applications/applications.co
     FooterComponent,
     DashboardComponent,
     ProductsComponent,
-    ApplicationsComponent
+    ApplicationsComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,

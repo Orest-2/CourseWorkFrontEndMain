@@ -23,7 +23,6 @@ import { Title } from "@angular/platform-browser";
 export class SigninComponent implements OnInit, AfterViewInit {
   signinForm: FormGroup;
   submitted = false;
-  error$: Observable<string>;
   isLoading$: Observable<boolean>;
 
   constructor(
@@ -79,9 +78,7 @@ export class SigninComponent implements OnInit, AfterViewInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.signinForm.invalid) {
-      return;
-    }
+    if (this.signinForm.invalid) return;
 
     this.store$.dispatch(
       new AuthStoreActions.SigninRequestAction(this.signinForm.value)
