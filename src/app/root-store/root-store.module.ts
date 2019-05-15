@@ -10,11 +10,11 @@ import { ApplicationStoreModule } from './application-store/application-store.mo
   declarations: [],
   imports: [
     CommonModule,
+    EffectsModule.forRoot([]),
+    StoreModule.forRoot({}),
     AuthStoreModule,
     ProductStoreModule,
     ApplicationStoreModule,
-    EffectsModule.forRoot([]),
-    StoreModule.forRoot({}),
   ]
 })
 export class RootStoreModule { }

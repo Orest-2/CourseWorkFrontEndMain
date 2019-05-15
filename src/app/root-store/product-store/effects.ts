@@ -18,7 +18,6 @@ export class ProductStoreEffects {
     ofType<productActions.LoadRequestAction>(
       productActions.ActionType.LOAD_REQUEST
     ),
-    startWith(new productActions.LoadRequestAction()),
     switchMap(() =>
       this.productService.getAll().pipe(
         map(

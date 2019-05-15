@@ -18,7 +18,6 @@ export class ApplicationStoreEffects {
     ofType<applicationAction.LoadRequestAction>(
       applicationAction.ActionType.LOAD_REQUEST
     ),
-    startWith(new applicationAction.LoadRequestAction()),
     switchMap(() =>
       this.applicationService.getAll().pipe(
         map(
