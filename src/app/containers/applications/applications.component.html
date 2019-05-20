@@ -30,7 +30,7 @@
         <h1 class="h3 mb-4 text-gray-800">Copyright applications</h1>
 
         <div class="card shadow mb-4">
-          <div class="card-header py-3">
+          <div *ngIf="(user$ | async).is_customer" class="card-header py-3">
             <div class="text-left">
               <button
                 type="button"
@@ -104,7 +104,7 @@
                       class="ui-button-danger"
                     ></button>
                   </td>
-                  <td *ngIf="rowData.status !== 0" class="text-center">
+                  <td *ngIf="rowData.status === 10" class="text-center">
                     <button
                       pButton
                       type="button"
@@ -195,7 +195,7 @@
                       >
                         <div
                           *ngFor="
-                            let task of applicationForm.controls.tasks.controls;
+                            let task of applicationForm.controls['tasks'].controls;
                             let i = index
                           "
                         >

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Title } from "@angular/platform-browser";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
-import { Application, Product } from "src/app/models";
+import { Application, Product, User } from "src/app/models";
 import { SelectItem, ConfirmationService } from "primeng/api";
 import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
@@ -10,9 +10,10 @@ import {
   ProductStoreSelectors,
   ProductStoreActions,
   ApplicationStoreSelectors,
-  ApplicationStoreActions
+  ApplicationStoreActions,
+  AuthStoreSelectors
 } from "src/app/root-store";
-import { map } from "rxjs/operators";
+import { map, filter } from "rxjs/operators";
 import { ApplicationService } from "src/app/services/application.service";
 
 @Component({
@@ -21,6 +22,7 @@ import { ApplicationService } from "src/app/services/application.service";
   styleUrls: ["./applications.component.scss"]
 })
 export class ApplicationsComponent implements OnInit {
+  user$: Observable<User>;
   applicationForm: FormGroup;
   display: boolean;
   newApplication: boolean;
@@ -44,13 +46,13 @@ export class ApplicationsComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle("Applications");
 
+    this.user$ = this.store$.select(AuthStoreSelectors.selectSigninUser);
     this.products$ = this.store$.select(
       ProductStoreSelectors.selectAllProductItems
     );
     this.applications$ = this.store$.select(
       ApplicationStoreSelectors.selectAllApplicationItems
     );
-
     this.errorProduct$ = this.store$.select(
       ProductStoreSelectors.selectProductError
     );
@@ -64,27 +66,31 @@ export class ApplicationsComponent implements OnInit {
       ApplicationStoreSelectors.selectApplicationIsLoading
     );
 
-    this.store$.dispatch(new ProductStoreActions.LoadRequestAction());
     this.store$.dispatch(new ApplicationStoreActions.LoadRequestAction());
-
-    this.productOptions$ = this.getOptions(this.products$, "id", "name");
 
     this.columns = [
       { field: "title", header: "Title" },
-      { field: "description", header: "Description" },
-      {
-        field: "product_id",
-        header: "Product",
-        render: (rowData: { product_id: number }) => {
-          return this.products$.pipe(
-            map(data => {
-              let p = data.find(el => el.id === rowData.product_id);
-              return p ? p.name : "";
-            })
-          );
-        }
-      }
+      { field: "description", header: "Description" }
     ];
+
+    this.user$.pipe(filter(user => !!user)).subscribe(user => {
+      if (user.is_customer) {
+        this.store$.dispatch(new ProductStoreActions.LoadRequestAction());
+        this.productOptions$ = this.getOptions(this.products$, "id", "name");
+        this.columns.push({
+          field: "product_id",
+          header: "Product",
+          render: (rowData: { product_id: number }) => {
+            return this.products$.pipe(
+              map(data => {
+                const p = data.find(el => el.id === rowData.product_id);
+                return p ? p.name : "";
+              })
+            );
+          }
+        });
+      }
+    });
 
     this.applicationForm = this.fb.group({
       id: [""],

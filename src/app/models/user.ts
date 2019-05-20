@@ -6,6 +6,7 @@ export interface User {
   email: string;
   belong_to: number;
   is_admin: boolean;
+  is_customer: boolean;
   is_executor: boolean;
   is_secretary: boolean;
 }

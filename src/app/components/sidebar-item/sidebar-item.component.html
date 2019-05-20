@@ -1,31 +1,34 @@
-<li class="nav-item m-0" routerLinkActive="active">
-  <a *ngIf="data.collapse"
+<li *ngIf="data.show" class="nav-item m-0" routerLinkActive="active">
+  <a
+    *ngIf="data.collapse"
     [ngClass]="getLinkClass()"
     [attr.data-toggle]="data.collapse ? 'collapse' : null"
-    [attr.data-target]="data.collapse ? '#'+data.id : null"
+    [attr.data-target]="data.collapse ? '#' + data.id : null"
     [attr.aria-expanded]="data.collapse ? 'true' : null"
     [attr.aria-controls]="data.collapse ? data.id : null"
   >
     <i [ngClass]="data.faIcon"></i>
-    <span>{{data.title}}</span>
+    <span>{{ data.title }}</span>
   </a>
   <a *ngIf="!data.collapse" class="nav-link" [routerLink]="[data.link]">
     <i [ngClass]="data.faIcon"></i>
-    <span>{{data.title}}</span>
+    <span>{{ data.title }}</span>
   </a>
-  <div *ngIf="data.collapse"
+  <div
+    *ngIf="data.collapse"
     [attr.id]="data.collapse ? data.id : null"
     class="collapse"
     aria-labelledby="headingTwo"
     data-parent="#accordionSidebar"
   >
     <div class="bg-white py-2 collapse-inner rounded">
-      <a class="collapse-item"
+      <a
+        class="collapse-item"
         *ngFor="let item of data.collapseItems"
         [routerLink]="[item.link]"
         routerLinkActive="router-link-active"
       >
-        {{item.title}}
+        {{ item.title }}
       </a>
     </div>
   </div>

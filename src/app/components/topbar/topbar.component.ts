@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 import { RootStoreState, AuthStoreSelectors } from "src/app/root-store";
 import { AngularTokenService } from "angular-token";
+import { User } from "src/app/models";
 
 @Component({
   selector: "app-topbar",
@@ -10,7 +11,7 @@ import { AngularTokenService } from "angular-token";
   styleUrls: ["./topbar.component.scss"]
 })
 export class TopbarComponent implements OnInit {
-  user$: Observable<any>;
+  user$: Observable<User>;
 
   constructor(
     private store$: Store<RootStoreState.State>,

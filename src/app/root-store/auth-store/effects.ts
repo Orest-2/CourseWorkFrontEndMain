@@ -6,6 +6,7 @@ import { catchError, map, switchMap, tap } from "rxjs/operators";
 import * as authActions from "./actions";
 import { AngularTokenService } from "angular-token";
 import { Router } from "@angular/router";
+import { User } from "src/app/models";
 
 @Injectable()
 export class AuthStoreEffects {
@@ -27,7 +28,12 @@ export class AuthStoreEffects {
           password: action.payload.password
         })
         .pipe(
-          map(user => new authActions.SigninSuccessAction({ user: user.body.data })),
+          map(
+            res =>
+              new authActions.SigninSuccessAction({
+                user: this.modifyUser(res.body.data)
+              })
+          ),
           catchError(error =>
             observableOf(
               new authActions.SigninFailureAction({ error: error.error })
@@ -50,7 +56,12 @@ export class AuthStoreEffects {
           passwordConfirmation: action.payload.confirmationPassword
         })
         .pipe(
-          map(user => new authActions.SignupSuccessAction({ user: user.body.data })),
+          map(
+            res =>
+              new authActions.SignupSuccessAction({
+                user: this.modifyUser(res.body.data)
+              })
+          ),
           catchError(error =>
             observableOf(
               new authActions.SignupFailureAction({ error: error.error })
@@ -87,7 +98,12 @@ export class AuthStoreEffects {
     ),
     switchMap(() =>
       this.dataService.validateToken().pipe(
-        map(user => new authActions.ValidateTokenSuccessAction({ user: user.data })),
+        map(
+          res =>
+            new authActions.ValidateTokenSuccessAction({
+              user: this.modifyUser(res.data)
+            })
+        ),
         catchError(error =>
           observableOf(
             new authActions.ValidateTokenFailureAction({ error: error.error })
@@ -107,4 +123,10 @@ export class AuthStoreEffects {
       this.router.navigateByUrl("auth/signin");
     })
   );
+
+  modifyUser(user: User) {
+    user.is_customer =
+      !user.is_admin && !user.is_secretary && !user.is_executor;
+    return user;
+  }
 }
