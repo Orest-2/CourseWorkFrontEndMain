@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { appConfig } from "../app.config";
+import { AppConfig } from "../app.config";
 import { HttpClient } from "@angular/common/http";
 import { Application } from "../models";
 
@@ -7,7 +7,7 @@ import { Application } from "../models";
   providedIn: "root"
 })
 export class ApplicationService {
-  applicationUrl = `${appConfig.API_BASE_URL}/copyright_applications`;
+  applicationUrl = `${AppConfig.API_BASE_URL}/copyright_applications`;
 
   constructor(private http: HttpClient) {}
 
