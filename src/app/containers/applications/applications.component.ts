@@ -14,7 +14,7 @@ import {
   AuthStoreSelectors
 } from "src/app/root-store";
 import { map, filter } from "rxjs/operators";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService } from "src/app/services";
 
 @Component({
   selector: "app-applications",

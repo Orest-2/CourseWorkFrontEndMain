@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ApplicationService } from "src/app/services/application.service";
+import { ApplicationService } from "src/app/services";
 import { Effect, Actions, ofType } from "@ngrx/effects";
 import { Observable, of as observableOf } from "rxjs";
 import * as applicationAction from "./actions";
