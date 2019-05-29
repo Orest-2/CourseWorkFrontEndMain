@@ -245,4 +245,41 @@ export class ApplicationsComponent implements OnInit {
       }
     });
   }
+
+  accept(id: number) {
+    this.applicationService
+      .accept(id)
+      .subscribe(
+        data =>
+          this.store$.dispatch(
+            new ApplicationStoreActions.UpdateRequestAction(
+              id,
+              data.copyright_application
+            )
+          ),
+        error => console.log(error)
+      );
+  }
+
+  decline(id: number) {
+    this.confirmationService.confirm({
+      message: "Do you want to decline this application?",
+      header: "Decline application",
+      icon: "pi pi-info-circle",
+      accept: () => {
+        this.applicationService
+          .decline(id)
+          .subscribe(
+            data =>
+              this.store$.dispatch(
+                new ApplicationStoreActions.UpdateRequestAction(
+                  id,
+                  data.copyright_application
+                )
+              ),
+            error => console.log(error)
+          );
+      }
+    });
+  }
 }

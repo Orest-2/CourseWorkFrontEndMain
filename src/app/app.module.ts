@@ -21,6 +21,8 @@ import { DashboardComponent } from './containers/dashboard/dashboard.component';
 import { ProductsComponent } from './containers/products/products.component';
 import { ApplicationsComponent } from './containers/applications/applications.component';
 import { SignupComponent } from './containers/signup/signup.component';
+import { SettingsComponent } from './containers/settings/settings.component';
+import { SettingsUserManagementComponent } from './containers/settings-user-management/settings-user-management.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { SignupComponent } from './containers/signup/signup.component';
     DashboardComponent,
     ProductsComponent,
     ApplicationsComponent,
-    SignupComponent
+    SignupComponent,
+    SettingsComponent,
+    SettingsUserManagementComponent
   ],
   imports: [
     BrowserModule,

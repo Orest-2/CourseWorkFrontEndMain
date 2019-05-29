@@ -12,7 +12,7 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<{ success: boolean; products: Product[] }> {
+  getAll() {
     return this.http.get<{ success: boolean; products: Product[] }>(
       this.productUrl
     );

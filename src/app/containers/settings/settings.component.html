@@ -1,0 +1,35 @@
+<div id="wrapper">
+  <app-sidebar class="bg-gradient-primary"></app-sidebar>
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+      <app-topbar></app-topbar>
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">Settings</h1>
+
+        <table class="table table-borderless">
+          <tbody>
+            <tr *ngIf="(user$ | async).is_admin">
+              <td>
+                <a [routerLink]="['/settings/user-management']"
+                  >User management</a
+                >
+              </td>
+              <td>Here you can add executor and secretary</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- End of Main Content -->
+
+    <app-footer></app-footer>
+  </div>
+  <!-- End of Content Wrapper -->
+</div>

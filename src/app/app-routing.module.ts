@@ -5,7 +5,9 @@ import { DashboardComponent } from "./containers/dashboard/dashboard.component";
 import { AuthGuard } from "./app-auth.guard";
 import { ProductsComponent } from "./containers/products/products.component";
 import { ApplicationsComponent } from "./containers/applications/applications.component";
-import { SignupComponent } from './containers/signup/signup.component';
+import { SignupComponent } from "./containers/signup/signup.component";
+import { SettingsComponent } from "./containers/settings/settings.component";
+import { SettingsUserManagementComponent } from "./containers/settings-user-management/settings-user-management.component";
 
 const routes: Routes = [
   { path: "auth/signin", component: SigninComponent },
@@ -19,6 +21,16 @@ const routes: Routes = [
   {
     path: "applications",
     component: ApplicationsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "settings",
+    component: SettingsComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "settings/user-management",
+    component: SettingsUserManagementComponent,
     canActivate: [AuthGuard]
   },
   { path: "**", redirectTo: "auth/signin" }

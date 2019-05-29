@@ -80,37 +80,61 @@
                       col.render(rowData) | async
                     }}</span>
                   </td>
-                  <td *ngIf="rowData.status === 0" class="text-center">
+                  <td *ngIf="(user$ | async).is_customer" class="text-center">
+                    <span *ngIf="rowData.status === 0">
+                      <button
+                        pButton
+                        type="button"
+                        label="Submit"
+                        class="ui-button-success mr-2"
+                        (click)="submit(rowData.id)"
+                      ></button>
+                      <button
+                        pButton
+                        type="button"
+                        icon="pi pi-pencil"
+                        class="ui-button-warning mr-2"
+                        (click)="showDialog('edit', rowData)"
+                      ></button>
+                      <button
+                        type="button"
+                        pButton
+                        icon="fa fa-times"
+                        class="ui-button-danger mr-2"
+                        (click)="delete(rowData.id)"
+                        class="ui-button-danger"
+                      ></button>
+                    </span>
                     <button
                       pButton
-                      type="button"
-                      label="Submit"
-                      class="ui-button-success mr-2"
-                      (click)="submit(rowData.id)"
-                    ></button>
-                    <button
-                      pButton
-                      type="button"
-                      icon="pi pi-pencil"
-                      class="ui-button-warning mr-2"
-                      (click)="showDialog('edit', rowData)"
-                    ></button>
-                    <button
-                      type="button"
-                      pButton
-                      icon="fa fa-times"
-                      class="ui-button-danger mr-2"
-                      (click)="delete(rowData.id)"
-                      class="ui-button-danger"
-                    ></button>
-                  </td>
-                  <td *ngIf="rowData.status === 10" class="text-center">
-                    <button
-                      pButton
+                      *ngIf="rowData.status === 10"
                       type="button"
                       label="Cancel Submit"
                       class="ui-button-danger mr-2"
                       (click)="unSubmit(rowData.id)"
+                    ></button>
+                  </td>
+                  <td
+                    *ngIf="
+                      (user$ | async).is_admin || (user$ | async).is_secretary
+                    "
+                    class="text-center"
+                  >
+                    <button
+                      pButton
+                      type="button"
+                      *ngIf="rowData.status === 10"
+                      label="Accept"
+                      class="ui-button-success mr-2"
+                      (click)="accept(rowData.id)"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      *ngIf="rowData.status === 20"
+                      label="Decline"
+                      class="ui-button-danger mr-2"
+                      (click)="decline(rowData.id)"
                     ></button>
                   </td>
                 </tr>
@@ -195,7 +219,8 @@
                       >
                         <div
                           *ngFor="
-                            let task of applicationForm.controls['tasks'].controls;
+                            let task of applicationForm.controls['tasks']
+                              .controls;
                             let i = index
                           "
                         >

@@ -1,0 +1,206 @@
+<div id="wrapper">
+  <app-sidebar class="bg-gradient-primary"></app-sidebar>
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!-- Main Content -->
+    <div id="content">
+      <app-topbar></app-topbar>
+
+      <!-- Begin Page Content -->
+      <div class="container-fluid">
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">User management</h1>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a [routerLink]="['/settings']">Settings</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              User management
+            </li>
+          </ol>
+        </nav>
+        <!-- Start content -->
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <div class="text-left">
+              <button
+                type="button"
+                pButton
+                icon="fa fa-plus"
+                (click)="display = true"
+                label="Add"
+              ></button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p-table
+              #dt
+              [columns]="columns"
+              [value]="users$ | async"
+              [paginator]="true"
+              [rows]="10"
+              [responsive]="true"
+            >
+              <ng-template pTemplate="caption">
+                <div class="text-right">
+                  <i class="fa fa-search ml-2 mr-2"></i>
+                  <input
+                    type="text"
+                    pInputText
+                    placeholder="Global Filter"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  />
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{ col.header }}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                  <td *ngFor="let col of columns">
+                    <span class="ui-column-title">{{ col.header }}</span>
+                    <span *ngIf="!col.render">{{ rowData[col.field] }}</span>
+                    <span *ngIf="col.render">{{ col.render(rowData) }}</span>
+                  </td>
+                  <td class="text-center">
+                    <button
+                      type="button"
+                      pButton
+                      icon="fa fa-times"
+                      class="ui-button-danger mr-2"
+                      (click)="delete(rowData.id)"
+                      class="ui-button-danger"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <!-- * dialogs -->
+            <p-confirmDialog #cd>
+              <p-footer>
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-times"
+                  label="No"
+                  class="ui-button-secondary"
+                  (click)="cd.reject()"
+                ></button>
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-check"
+                  label="Yes"
+                  class="ui-button-danger"
+                  (click)="cd.accept()"
+                ></button>
+              </p-footer>
+            </p-confirmDialog>
+
+            <p-dialog
+              header="New user"
+              [(visible)]="display"
+              [responsive]="true"
+              showEffect="fade"
+              [modal]="true"
+              [style]="{ width: '400px' }"
+            >
+              <form [formGroup]="userForm">
+                <div class="ui-g ui-fluid">
+                  <div class="ui-g-12 mt-2">
+                    <span class="ui-float-label">
+                      <input
+                        id="float-input"
+                        type="text"
+                        formControlName="email"
+                        pInputText
+                      />
+                      <label for="float-input"
+                        >Email <span class="text-danger">*</span></label
+                      >
+                    </span>
+                  </div>
+                  <div class="ui-g-12 mt-2">
+                    <span class="ui-float-label">
+                      <input
+                        id="float-input"
+                        type="text"
+                        formControlName="password"
+                        pInputText
+                      />
+                      <label for="float-input"
+                        >Password<span class="text-danger">*</span></label
+                      >
+                    </span>
+                  </div>
+                  <div class="ui-g-12 mt-2">
+                    <span class="ui-float-label">
+                      <input
+                        id="float-input"
+                        type="text"
+                        formControlName="password_confirmation"
+                        pInputText
+                      />
+                      <label for="float-input"
+                        >Password confirmation<span class="text-danger"
+                          >*</span
+                        ></label
+                      >
+                    </span>
+                  </div>
+
+                  <div class="ui-g-12 mt-2">
+                    <p-dropdown
+                      appendTo="body"
+                      [options]="userTypes"
+                      formControlName="type"
+                      placeholder="Select a User type *"
+                    ></p-dropdown>
+                  </div>
+                </div>
+              </form>
+
+              <p-footer>
+                <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                  <button
+                    type="button"
+                    pButton
+                    icon="pi pi-times"
+                    (click)="display = false"
+                    label="Cancel"
+                    class="ui-button-secondary"
+                  ></button>
+                  <button
+                    type="button"
+                    pButton
+                    icon="fa fa-check"
+                    (click)="create()"
+                    [disabled]="!userForm.valid"
+                    label="Save"
+                  ></button>
+                </div>
+              </p-footer>
+            </p-dialog>
+            <!-- * /.dialogs -->
+          </div>
+        </div>
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- End of Main Content -->
+
+    <app-footer></app-footer>
+  </div>
+  <!-- End of Content Wrapper -->
+</div>

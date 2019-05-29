@@ -58,4 +58,18 @@ export class ApplicationService {
       copyright_application: Application;
     }>(`${this.applicationUrl}/unsubmit/${id}`);
   }
+
+  accept(id: number) {
+    return this.http.get<{
+      success: boolean;
+      copyright_application: Application;
+    }>(`${this.applicationUrl}/accept/${id}`);
+  }
+
+  decline(id: number) {
+    return this.http.get<{
+      success: boolean;
+      copyright_application: Application;
+    }>(`${this.applicationUrl}/decline/${id}`);
+  }
 }
