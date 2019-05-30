@@ -1,22 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input } from "@angular/core";
 
 @Component({
-  selector: 'app-sidebar-item',
-  templateUrl: './sidebar-item.component.html',
-  styleUrls: ['./sidebar-item.component.scss']
+  selector: "app-sidebar-item",
+  templateUrl: "./sidebar-item.component.html",
+  styleUrls: ["./sidebar-item.component.scss"]
 })
 export class SidebarItemComponent implements OnInit {
   @Input() data;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   getLinkClass() {
     return {
-      'nav-link': true,
+      "nav-link": true,
       collapsed: this.data.collapse
     };
   }
-
 }

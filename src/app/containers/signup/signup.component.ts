@@ -1,4 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  AfterViewInit
+} from "@angular/core";
 import { Store } from "@ngrx/store";
 import {
   RootStoreState,
@@ -16,7 +21,7 @@ import { MessageService } from "primeng/api";
   templateUrl: "./signup.component.html",
   styleUrls: ["./signup.component.scss"]
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, AfterViewInit {
   signupForm: FormGroup;
   submitted = false;
   error$: Observable<string>;
@@ -57,7 +62,7 @@ export class SignupComponent implements OnInit {
       .select(AuthStoreSelectors.selectSignupError)
       .subscribe(error => {
         if (error) {
-          let tostError = [];
+          const tostError = [];
           error.errors.full_messages.forEach((element: any) => {
             tostError.push({
               severity: "error",
@@ -88,7 +93,9 @@ export class SignupComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.signupForm.invalid) return;
+    if (this.signupForm.invalid) {
+      return;
+    }
 
     this.store$.dispatch(
       new AuthStoreActions.SignupRequestAction(this.signupForm.value)

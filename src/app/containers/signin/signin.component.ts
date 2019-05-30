@@ -78,7 +78,7 @@ export class SigninComponent implements OnInit, AfterViewInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.signinForm.invalid) return;
+    if (this.signinForm.invalid) { return; }
 
     this.store$.dispatch(
       new AuthStoreActions.SigninRequestAction(this.signinForm.value)
