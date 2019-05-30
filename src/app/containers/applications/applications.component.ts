@@ -15,6 +15,10 @@ import {
 } from "src/app/root-store";
 import { map, filter } from "rxjs/operators";
 import { ApplicationService } from "src/app/services";
+import {
+  SettingsUserStoreSelectors,
+  SettingsUserStoreActions
+} from "src/app/root-store/settings-user-store";
 
 @Component({
   selector: "app-applications",
@@ -24,12 +28,16 @@ import { ApplicationService } from "src/app/services";
 export class ApplicationsComponent implements OnInit {
   user$: Observable<User>;
   applicationForm: FormGroup;
+  shareForm: FormGroup;
   display: boolean;
+  displayShare: boolean;
   newApplication: boolean;
   columns: any[];
   productOptions$: Observable<SelectItem[]>;
+  executorOptions$: Observable<SelectItem[]>;
   applications$: Observable<Application[]>;
   products$: Observable<Product[]>;
+  users$: Observable<User[]>;
   errorProduct$: Observable<string>;
   errorApplication$: Observable<string>;
   isLoadingProduct$: Observable<boolean>;
@@ -47,6 +55,9 @@ export class ApplicationsComponent implements OnInit {
     this.title.setTitle("Applications");
 
     this.user$ = this.store$.select(AuthStoreSelectors.selectSigninUser);
+    this.users$ = this.store$.select(
+      SettingsUserStoreSelectors.selectAllUserItems
+    );
     this.products$ = this.store$.select(
       ProductStoreSelectors.selectAllProductItems
     );
@@ -67,6 +78,7 @@ export class ApplicationsComponent implements OnInit {
     );
 
     this.store$.dispatch(new ApplicationStoreActions.LoadRequestAction());
+    this.store$.dispatch(new SettingsUserStoreActions.LoadRequestAction());
 
     this.columns = [
       { field: "title", header: "Title" },
@@ -92,12 +104,23 @@ export class ApplicationsComponent implements OnInit {
       }
     });
 
+    this.executorOptions$ = this.getOptions(
+      this.users$.pipe(map(data => data.filter(user => user.is_executor))),
+      "id",
+      "email"
+    );
+
     this.applicationForm = this.fb.group({
       id: [""],
       product_id: ["", Validators.required],
       title: ["", Validators.required],
       description: ["", Validators.required],
       tasks: this.fb.array([])
+    });
+
+    this.shareForm = this.fb.group({
+      id: ["", Validators.required],
+      executor_id: ["", Validators.required]
     });
   }
 
@@ -281,5 +304,30 @@ export class ApplicationsComponent implements OnInit {
           );
       }
     });
+  }
+
+  openShareDialog(id: number) {
+    this.shareForm.reset();
+    this.shareForm.controls.id.setValue(id);
+    this.displayShare = true;
+  }
+
+  share() {
+    console.log(this.shareForm.value);
+
+    this.applicationService
+      .share(this.shareForm.value)
+      .subscribe(
+        data =>
+          this.store$.dispatch(
+            new ApplicationStoreActions.UpdateRequestAction(
+              data.copyright_application.id,
+              data.copyright_application
+            )
+          ),
+        error => console.log(error)
+      );
+
+    this.displayShare = false;
   }
 }

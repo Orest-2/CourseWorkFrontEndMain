@@ -72,4 +72,11 @@ export class ApplicationService {
       copyright_application: Application;
     }>(`${this.applicationUrl}/decline/${id}`);
   }
+
+  share(data: { id: number; executor_id: number }) {
+    return this.http.post<{
+      success: boolean;
+      copyright_application: Application;
+    }>(`${this.applicationUrl}/share`, data);
+  }
 }
