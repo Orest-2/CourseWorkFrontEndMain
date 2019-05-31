@@ -19,6 +19,7 @@ import {
   SettingsUserStoreSelectors,
   SettingsUserStoreActions
 } from "src/app/root-store/settings-user-store";
+import { OverlayPanel } from "primeng/overlaypanel";
 
 @Component({
   selector: "app-applications",
@@ -33,6 +34,7 @@ export class ApplicationsComponent implements OnInit {
   displayShare: boolean;
   newApplication: boolean;
   columns: any[];
+  searchResult: any[];
   productOptions$: Observable<SelectItem[]>;
   executorOptions$: Observable<SelectItem[]>;
   applications$: Observable<Application[]>;
@@ -313,8 +315,6 @@ export class ApplicationsComponent implements OnInit {
   }
 
   share() {
-    console.log(this.shareForm.value);
-
     this.applicationService
       .share(this.shareForm.value)
       .subscribe(
@@ -329,5 +329,12 @@ export class ApplicationsComponent implements OnInit {
       );
 
     this.displayShare = false;
+  }
+
+  search(event, id: number, overlayPanel: OverlayPanel) {
+    this.applicationService.search(id).subscribe(data => {
+      this.searchResult = data.result;
+      overlayPanel.toggle(event);
+    });
   }
 }

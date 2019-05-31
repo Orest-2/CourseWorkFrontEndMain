@@ -79,4 +79,13 @@ export class ApplicationService {
       copyright_application: Application;
     }>(`${this.applicationUrl}/share`, data);
   }
+
+  search(id: number) {
+    return this.http.post<{
+      success: boolean;
+      result: object[];
+    }>(`${this.applicationUrl}/custom_search`, {
+      id
+    });
+  }
 }

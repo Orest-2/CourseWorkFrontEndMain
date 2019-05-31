@@ -145,9 +145,36 @@
                       (click)="decline(rowData.id)"
                     ></button>
                   </td>
+                  <td *ngIf="(user$ | async).is_executor" class="text-center">
+                    <button
+                      type="button"
+                      (click)="search($event, rowData.product_id, op)"
+                      pButton
+                      icon="pi pi-search"
+                    ></button>
+                  </td>
                 </tr>
               </ng-template>
             </p-table>
+
+            <!-- * OverlayPanel -->
+            <p-overlayPanel #op appendTo="body">
+              <p-scrollPanel [style]="{ width: '600px', height: '200px' }">
+                <ul class="list-group">
+                  <li class="list-group-item" *ngFor="let item of searchResult">
+                    <div class="card-body">
+                      <a [href]="item.link">
+                        <h5 class="card-title">{{ item.title }}</h5>
+                      </a>
+                      <p class="card-text">
+                        {{ item.snippet }}
+                      </p>
+                    </div>
+                  </li>
+                </ul>
+              </p-scrollPanel>
+            </p-overlayPanel>
+            <!-- * /OverlayPanel -->
 
             <!-- * dialogs -->
             <p-confirmDialog #cd>
